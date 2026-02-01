@@ -142,7 +142,7 @@ A Claro utiliza abordagem de **modelagem incremental** para avaliar viabilidade 
 
 ## 🏗️ Arquitetura da Solução
 
-![Arquitetura AWS](reports/figures/diagrama_arquitetura.png)
+![Arquitetura AWS](diagrama_arquitetura.jpg)
 
 ### Visão Geral da Arquitetura
 
