@@ -170,9 +170,8 @@ A solução utiliza arquitetura **Medallion** (Bronze → Silver → Gold) na AW
 |------|-----------|---------------|-----------------|-----------------|
 | `base_dados_cadastrais` | Informações cadastrais dos clientes | CPF | ~10M registros | [Nome] |
 | `base_score_bureau_movel` | Score de crédito bureau | CPF + Data | ~15M registros | [Nome] |
-| `base_score_bureau_movel_full` | Score completo com histórico | CPF + Data | ~20M registros | [Nome] |
+| `base_score_bureau_movel_full` | Score com flag 0 para clientes reprovados | CPF + Data | ~20M registros | [Nome] |
 | `base_telco` | Dados de uso e serviços telco | CPF + Mês | ~50M registros | [Nome] |
-| `bases_recarga` | Histórico de recargas | CPF + Transação | ~100M registros | [Nome] |
 | `book_atraso` | Histórico de atrasos | CPF + Evento | ~5M registros | [Nome] |
 | `book_pagamento` | Histórico de pagamentos | CPF + Transação | ~80M registros | [Nome] |
 
@@ -186,13 +185,9 @@ A solução utiliza arquitetura **Medallion** (Bronze → Silver → Gold) na AW
 **Books Utilizados**:
 - `book_atraso` - Variáveis de comportamento de atraso
 - `book_pagamento` - Variáveis de histórico transacional
-- `book_recarga` - Padrões de recarga (frequência, valor, consistência)
 
-### Modelo Entidade-Relacionamento
 
-![MER - Base Recarga](docs/figures/mer_recarga.png) *(se disponível)*
 
-**Para mais detalhes**: Consulte [docs/02_data_understanding.md](docs/02_data_understanding.md)
 
 **Dicionários completos**: Disponíveis em [docs/data_dictionary/](docs/data_dictionary/)
 
@@ -220,10 +215,7 @@ modelo-behavior-claro/
 │   ├── book_variaveis/               # Books de variáveis
 │   │   ├── book_atraso.xlsx
 │   │   ├── book_pagamento.xlsx
-│   │   └── book_recarga.xlsx
-│   │
-│   └── figures/                      # Imagens e diagramas
-│       └── mer_recarga.png
+│   
 │
 ├── notebooks/                         # Análises exploratórias (EDAs)
 │   ├── eda_cadastrais.ipynb          # EDA - Base cadastral
