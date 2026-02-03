@@ -31,7 +31,7 @@ Este projeto está sendo desenvolvido durante o **Super Hackathon 2025** com o o
 
 - ✅ Construir visão única de cliente por CPF consolidando múltiplas bases
 - ✅ Identificar padrões comportamentais de inadimplência
-- 🔄 Desenvolver modelo baseline reprodutível e escalável (em andamento)
+- 🔄 Desenvolver modelo behavior reprodutível e escalável (em andamento)
 - 🔄 Gerar insights acionáveis para estratégias de mitigação de risco (em andamento)
 
 ---
