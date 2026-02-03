@@ -337,12 +337,11 @@ As métricas e resultados serão atualizados assim que o modelo baseline estiver
 
 ### Divisão de Responsabilidades
 
-- **Análises Exploratórias (EDAs)**: Cada membro responsável por uma base de dados
-- **Feature Engineering**: Desenvolvimento colaborativo de variáveis preditivas
-- **Modelagem**: Desenvolvimento e otimização do modelo baseline
-- **Infraestrutura AWS**: Implementação da arquitetura Medallion
-- **Documentação**: Consolidação de informações e reprodutibilidade
-
+- **Análises Exploratórias (EDAs)**: Daniel Dayan, Cézar Augusto Freitas, Gabriel Lenhart e Gabriel Roledo
+- **Feature Engineering**: Daniel Dayan e Cézar Augusto Freitas
+- **Modelagem**: Rafael Lima e Daniel Dayan
+- **Engenharia de dados**: Ricardo
+- **Documentação**: Gabriel Roledo
 ---
 
 ## 📚 Documentação Detalhada
@@ -372,9 +371,8 @@ A documentação completa do projeto está organizada na pasta `docs/`:
 
 ## 🙏 Agradecimentos
 
-- **Claro** pela disponibilização dos dados reais e patrocínio do desafio
-- **Fábio Oliveira** (Claro - Crédito e Cobrança) pelas orientações técnicas detalhadas
-- **PoD Academy** pela organização do Super Hackathon 2025
+- **Claro** pela disponibilização dos dados reais, orientações técnicas detalhadas e patrocínio do desafio
+- **Toda a Equipe PoD Academy** pela organização e suporte aos participantes do Super Hackathon 2025
 - Todos os membros do time pela dedicação e colaboração
 
 ---
