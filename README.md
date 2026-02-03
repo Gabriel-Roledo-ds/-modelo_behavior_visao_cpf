@@ -42,7 +42,6 @@ Este projeto está sendo desenvolvido durante o **Super Hackathon 2025** com o o
 
 Identificar, entre os clientes da base pré-pago, quais têm maior probabilidade de se tornarem inadimplentes, permitindo ações preventivas e estratégias de mitigação de risco.
 
-> **"Risco de Crédito é a chance de famílias e empresas NÃO cumprirem com suas obrigações, resultando em perdas."**
 
 ### Contexto Estratégico da Claro
 
@@ -67,7 +66,6 @@ Identificar, entre os clientes da base pré-pago, quais têm maior probabilidade
 
 **Resultado**: ✅ Cliente aprovado, ✅ Retenção, ✅ Aumento de receita (pós > pré)
 
-> *"É diferente de crédito pessoal, financiamento... com as informações de recarga eu consigo classificar ou eventualmente reclassificar um cliente que não teria chance de ter pós-pago."*
 
 ### Métricas de Sucesso
 
@@ -75,17 +73,16 @@ Identificar, entre os clientes da base pré-pago, quais têm maior probabilidade
 
 | Métrica | Objetivo | Status |
 |---------|----------|---------|
-| **KS (Kolmogorov-Smirnov)** | ≥ 33,1 (benchmark) | 🔄 Em avaliação |
+| **KS** | ≥ 33,1 (benchmark) | 🔄 Em avaliação |
 | **GINI** | Máximo possível | 🔄 Em avaliação |
 | **Taxa de Aprovação** | ~73-74% (baseline) | 🔄 Em avaliação |
 | **Taxa de Inadimplência** | ≤ Baseline grupo controle | 🔄 Em avaliação |
 
-**⚠️ Importante**: 
-> "O KS NÃO É TUDO NESSA VIDA" - A análise deve considerar toda a curva ROC e matriz de confusão, com **foco especial na metade inferior da curva de score** (onde está o maior impacto de negócio).
+> A análise considera toda a curva ROC e matriz de confusão, com **foco especial na metade inferior da curva de score** (onde está o maior impacto de negócio).
 
 ### Estratégia de Modelagem Incremental
 
-A Claro utiliza abordagem de **modelagem incremental** para avaliar viabilidade econômica de cada fonte de dados:
+A abordagem de **modelagem incremental** avalia viabilidade econômica de cada fonte de dados:
 
 ```
 1. Baseline (CPF + Safra + Target)           → KS base
@@ -177,7 +174,7 @@ A solução utiliza arquitetura **Medallion** (Bronze → Silver → Gold) na AW
 
 ### Books de Variáveis
 
-**Conceito**: Estruturas pré-calculadas de variáveis categorizadas por assunto, desenvolvidas pela Claro para:
+**Conceito**: Estruturas pré-calculadas de variáveis categorizadas por assunto, desenvolvidas para:
 - ✅ Padronização e reutilização
 - ✅ Eficiência computacional
 - ✅ Governança de dados
@@ -185,8 +182,6 @@ A solução utiliza arquitetura **Medallion** (Bronze → Silver → Gold) na AW
 **Books Utilizados**:
 - `book_atraso` - Variáveis de comportamento de atraso
 - `book_pagamento` - Variáveis de histórico transacional
-
-
 
 
 **Dicionários completos**: Disponíveis em [docs/data_dictionary/](docs/data_dictionary/)
