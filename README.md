@@ -328,7 +328,7 @@ As métricas e resultados serão atualizados assim que o modelo baseline estiver
 **Membros**:
 - Daniel Dayan
 - Diego Lessa
-- Gabriel Lenhard
+- Gabriel Lenhart
 - Gabriel Roledo
 - Tiago Carvalho
 - Cézar Augusto Freitas
@@ -340,7 +340,7 @@ As métricas e resultados serão atualizados assim que o modelo baseline estiver
 - **Análises Exploratórias (EDAs)**: Daniel Dayan, Cézar Augusto Freitas, Gabriel Lenhart e Gabriel Roledo
 - **Feature Engineering**: Daniel Dayan e Cézar Augusto Freitas
 - **Modelagem**: Rafael Lima e Daniel Dayan
-- **Engenharia de dados**: Ricardo
+- **Engenharia de dados**: Ricardo Max
 - **Documentação**: Gabriel Roledo
 ---
 
@@ -386,7 +386,7 @@ A documentação completa do projeto está organizada na pasta `docs/`:
 - [ ] Integração de dados (visão única por CPF) 🔄
 - [ ] Feature engineering 🔄
 - [ ] Modelo baseline 🔄
-- [ ] Modelagem incremental (6 versões) ⏳
+- [ ] Modelagem incremental ⏳
 - [ ] Validação out-of-time ⏳
 - [ ] Otimização de hiperparâmetros ⏳
 - [ ] Análise de resultados ⏳
@@ -395,21 +395,16 @@ A documentação completa do projeto está organizada na pasta `docs/`:
 
 **Legenda**: ✅ Concluído | 🔄 Em Andamento | ⏳ Aguardando
 
----
 
-## 📞 Contato
 
-**Super Hackathon 2025**  
-**Patrocinadora**: Claro  
-**Time**: Behavior Claro  
-**Líder**: Rafael Lima
 
----
+
 
 <div align="center">
 
-**Desenvolvido pelo Squad 9**
+**Squad 9**
+**Super Hackaton 2026**
 
-Super Hackathon 2025
+
 
 </div>
