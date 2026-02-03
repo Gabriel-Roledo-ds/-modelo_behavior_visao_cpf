@@ -410,10 +410,8 @@ A documentação completa do projeto está organizada na pasta `docs/`:
 
 <div align="center">
 
-**Desenvolvido com ❤️ pela Equipe Behavior Claro**
+**Desenvolvido pelo Squad 9**
 
 Super Hackathon 2025
-
-*"Transformando dados em oportunidades de negócio através de gestão inteligente de risco"*
 
 </div>
