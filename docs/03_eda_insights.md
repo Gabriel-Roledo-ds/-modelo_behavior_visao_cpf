@@ -51,7 +51,7 @@ MA/CE/RR: ~36% FPD | DF: ~26% FPD | **Δ 10pp regional**
 Pode ser uma variável financeira (como renda ou limite) com pouquíssimos valores astronômicos que distorcem a média.
 **var_11**: Densa nuvem de outliers
 
-![Boxplot var11](figures/cadastrais_boxplots_var11.png)
+![Boxplot var11](figures/cadastrais_boxplot_var11.png)
 
 
 ### Perfil Etário no Momento da Proposta
