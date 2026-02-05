@@ -37,11 +37,9 @@ Média: 42,4 anos | Mediana: 41 anos
 
 ![Distribuição Idade](figures/cadastrais_distribuicao_idade.png)
 
-**3. var_04 (Rating)** 
-Nulos: 44,75% FPD | Preenchidos: 23,55% FPD | **Δ +21pp**
 
-**4. var_15 (UF)**   
-MA/CE/RR: ~35% FPD | DF: ~18% FPD | **Δ 17pp regional**
+**3. var_15 (UF)**   
+MA/CE/RR: ~36% FPD | DF: ~26% FPD | **Δ 10pp regional**
 
 ![FPD por UF](figures/cadastrais_uf_fpd.png)
 
@@ -53,7 +51,7 @@ MA/CE/RR: ~35% FPD | DF: ~18% FPD | **Δ 17pp regional**
 Pode ser uma variável financeira (como renda ou limite) com pouquíssimos valores astronômicos que distorcem a média.
 **var_11**: Densa nuvem de outliers
 
-![Boxplot var_11](figures/cadastrais_boxplots_var11.png)
+![Boxplot var11](figures/cadastrais_boxplots_var11.png)
 
 
 ### Perfil Etário no Momento da Proposta
