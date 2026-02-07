@@ -87,4 +87,78 @@ Embora haja variação, ela ocorre dentro de um intervalo de aproximadamente 2,6
 
 ---
 
-*Atualização: 05/02/2026 | Gabriel Roledo*
+---
+
+## 📊 Base: Score Bureau Móvel
+
+**Responsável**: Daniel Dayan | **Registros**: 1.290.526 | **Variáveis**: 8
+**Notebook**: [eda_bureau_score.ipynb](../notebooks/eda_bureau_score.ipynb) | **Dicionário**: [dicionario_bureau.docx](data_dictionary/dicionario_bureau.docx)
+
+---
+
+### Visão Geral
+
+Base de scores de crédito de bureaus externos. Granularidade: CPF + SAFRA. Target FPD 24% inadimplentes. Período: Out/2024-Mar/2025 (6 safras).
+
+---
+
+### Qualidade dos Dados
+
+- **CPFs únicos**: 1.272.095
+- **Duplicados**: 36.379 CPFs em múltiplas safras (mesmo cliente, safras diferentes)
+- **Missing values**: ~0,7% em SCORE_01 e 0.04% em SCORE_02
+- **Valores suspeitos**: Os valores 0, 1 e 2 aparecem no limite inferior do boxplot, indicando que além dos missing values, esss valores devem ser desconsiderados
+
+---
+
+### Descoberta Principal: Scores com Baixo Poder Preditivo ⚠️
+
+**SCORE_01 e SCORE_02**: Ambos mostram **baixa capacidade discriminatória**
+
+![Distribuição Scores vs FPD](figures/kde_score1_2_fpd.png)
+
+**Observações:**
+- Distribuições FPD=0 vs FPD=1 são muito sobrepostas
+- Adimplentes têm score ligeiramente maior (esperado)
+- Mas diferença é pequena demais para ser preditiva forte
+- **Não são variáveis-chave** para o modelo
+
+---
+
+### Variáveis Comportamentais
+
+**Score muda entre safras:**
+- Análise de CPFs recorrentes mostra variação nos scores
+- Scores capturam **comportamento recente**
+- **Recomendação**: Usar última safra para cada CPF
+
+---
+
+### Variáveis para Remover
+
+**3 constantes (cardinalidade = 1):**
+- FLAG_INSTALACAO
+- PROD
+- flag_mig2
+
+**Motivo**: Sem variação = sem poder preditivo. Removê-las reduz processamento.
+
+---
+
+### Sazonalidade
+
+**Taxa de FPD por safra**: Pouca variabilidade entre safras (estável ~24%)
+
+---
+
+### Recomendações
+
+1. **Tratar valores 0,1,2 como missing** (não são scores válidos)
+2. **Remover 3 variáveis constantes** antes da modelagem
+3. **Usar última safra** para CPFs duplicados
+4. **Não depender exclusivamente dos scores** - poder preditivo limitado
+5. **Combinar com outras bases** (cadastrais, recarga, telco) para ganho incremental
+
+---
+
+
