@@ -5,13 +5,13 @@
 ## 📊 Base: Dados Cadastrais
 
 **Responsável**: Gabriel Roledo | **Registros**: 3.900.378 | **Variáveis**: 33  
-**Notebook**: [eda_cadastrais.ipynb](../notebooks/eda_cadastrais.ipynb) | **Dicionário**: [dict_cadastrais.docx](data_dictionary/dict_cadastrais.docx)
+**Notebook**: [eda_cadastrais.ipynb](../notebooks/eda_cadastrais.ipynb) | **Dicionário**: [dicionario_cadastrais.docx](data_dictionary/dicionario_cadastrais.docx)
 
 ---
 
 ### Visão Geral
 
-Usamos um merge para analisar apenas ID (cpf + safra) presentes no FPD da base Bureau. Período: Out/2024-Mar/2025 (6 safras).
+A análise foi conduzida a partir de um merge, considerando as variáveis ID (CPF + safra) e FPD_SCORE presentes no FPD da base Bureau. O período analisado compreende out/2024 a mar/2025, totalizando 6 safras.
 
 ---
 
@@ -33,13 +33,16 @@ Clara separação FPD=0 vs FPD=1. FPD=1 concentra em valores altos (80-90).
 
 **2. Idade** 
 Jovens (18-35): maior risco. Estabiliza após 45 anos. Anomalia aos 60 (aposentados?).  
-Média: 42,4 anos | Mediana: 41 anos
+Média: 42,4 anos
 
 ![Distribuição Idade](figures/cadastrais_distribuicao_idade.png)
 
 
 **3. var_15 (UF)**   
 MA/CE/RR: ~36% FPD | DF: ~26% FPD | **Δ 10pp regional**
+
+MA, CE e RR aparecem com as maiores proporções de FPD, bem acima da linha de referência (média geral).
+Já DF e GO estão entre os menores níveis de FPD, sugerindo performance significativamente melhor do que a média no período analisado.
 
 ![FPD por UF](figures/cadastrais_uf_fpd.png)
 
