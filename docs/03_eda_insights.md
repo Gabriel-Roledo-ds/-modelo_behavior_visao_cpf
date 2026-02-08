@@ -467,7 +467,7 @@ Base **transacional** de pagamentos de faturas. **1 ano de histórico** antes da
 
 **Responsável**: Daniel Dayan | **Registros**: 1.290.526 | **Variáveis**: 76 (var_26 a var_93)  
 **Período**: Out/2024 - Mar/2025 (6 safras)  
-**Notebook**: [eda_telco.ipynb](../notebooks/eda_telco.ipynb) | **Dicionário**: [dict_telco.docx](data_dictionary/dict_telco.docx)
+**Notebook**: [eda_telco.ipynb](../notebooks/eda_telco.ipynb) | **Dicionário**: [dicionario_telco.docx](data_dictionary/dicionario_telco.docx)
 
 ---
 
@@ -496,7 +496,7 @@ Base de **uso e serviços telco** (consumo de dados, voz, SMS, planos, etc.). Va
 
 ---
 
-### Poder Preditivo: MISTO ⚙️
+### Poder Preditivo: MISTO 
 
 **Variáveis Numéricas:** ⚠️ **Baixo poder preditivo**
 
@@ -512,7 +512,7 @@ Base de **uso e serviços telco** (consumo de dados, voz, SMS, planos, etc.). Va
 
 **Categorias discriminatórias:**
 - Algumas categorias têm **100% target=0** (apenas adimplentes)
-- **var_74**: Categoria com **100% target=1** (apenas inadimplentes!) ⭐
+- **var_74**: Categoria com **100% target=1** (apenas inadimplentes!) 
 - **Alto poder de separação** em variáveis específicas
 
 ---
@@ -531,7 +531,7 @@ Base de **uso e serviços telco** (consumo de dados, voz, SMS, planos, etc.). Va
 
 ---
 
-### Variável Destaque: var_74 ⭐⭐⭐
+### Variável Destaque: var_74
 
 **Descoberta crítica:**
 - Possui categoria onde **100% dos clientes são inadimplentes**
