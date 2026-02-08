@@ -297,5 +297,326 @@ Base **transacional** de faturas em atraso. Após join com Bureau: 1.290.526 reg
 
 ---
 
+---
+
+## 📊 Base: Book Pagamentos
+
+**Responsável**: Daniel Dayan | **Registros**: 21.829.628 (transacional) → 140.606 (pós-filtro)  
+**Variáveis**: 73 | **Período histórico**: Out/2023 - Mar/2025 (18 meses)  
+**Notebook**: [eda_pagamentos.ipynb](../notebooks/eda_pagamentos.ipynb) | **Dicionário**: [dicionario_pagamentos.docx](data_dictionary/dicionario_pagamentos.docx)
+
+---
+
+### Visão Geral
+
+Base **transacional** de pagamentos de faturas. **1 ano de histórico** antes da primeira safra de modelagem. Complementar ao Book Atraso (mostra comportamento de pagamento).
+
+**Granularidade**: Transação de pagamento (múltiplas linhas por CPF)
+
+---
+
+### Qualidade dos Dados
+
+**Colunas 100% nulas (removidas):**
+- Validado: missings na amostra = missings na base completa
+
+**Variáveis com cardinalidade única (remover):**
+- Motivo_estorno
+- VAL_MULTA_FID_ITEM  
+- VAL_DESCONTO_ITEM
+
+**Exceção**: 
+- IND_TIPO_CREDITO: Tem missings + categoria "P" → **Manter** (pode indicar comportamento)
+
+**Variáveis duplicadas:**
+- VAL_PAGAMENTO_FATURA = VAL_PAGAMENTO_ITEM (estatísticas idênticas)
+- VAL_MULTA_EQUIP_ITEM = VAL_MULTA_EQUIP_TOTAL (estatísticas idênticas)
+
+---
+
+### Poder Preditivo: BAIXO ⚠️
+
+**Descoberta principal**: 
+
+> "NENHUMA variável numérica tem grande poder de predição"
+
+![historama kde numéricas vs fpd](figures/pagamentos_kde_numericas.png)
+
+**Variáveis categóricas com leve diferenciação:**
+
+| Variável | Categoria | Risco |
+|----------|-----------|-------|
+| Tipo fatura | 146 | Acima da média |
+| Status fatura | Aberto | Acima da média |
+| Área | 19, 36 | Acima da média |
+| Forma pagamento | 15, PA | Acima da média |
+| Banco | 1364, 1423 | Acima da média |
+| Tipo pagamento | 30006 | Acima da média |
+
+**Observação**: Diferenças são pequenas. Não há preditores fortes isolados.
+
+---
+
+### Distribuição das Variáveis
+
+**Numéricas:**
+- Baixa/média variabilidade
+- Concentração à esquerda (assimetria)
+- Outliers superiores significativos
+
+**Valores negativos:**
+- Presentes em algumas variáveis
+- Provável tratamento para missing information
+
+---
+
+### Outliers
+
+**Magnitude**: Até 8% dos dados por variável
+
+**Exemplos extremos:**
+- Pagamento de fatura: R$ 44.253,25
+
+**Questão**: São erros ou casos reais extremos?  
+**Conclusão da análise**: Provavelmente valores reais (clientes corporativos/VIP)
+
+---
+
+### Análise Temporal
+
+**Período disponível**: Out/2023 - Mar/2025
+
+**Padrões identificados:**
+
+**Frequência categórica:**
+- Estável ao longo do tempo
+- Volume de dados com tendência de crescimento
+
+**Valores pagos:**
+- ↑ Aumento gradual ao longo do tempo
+- Picos em meses específicos
+
+**Colunas de Atividade/Crédito:**
+- Iniciam apenas em **Mar/2024** (1 ano após início da série)
+- Limitação: menos histórico disponível
+
+**Taxa de FPD:**
+- Comportamento cíclico constante
+- Pico no final da série
+
+---
+
+### Data de Referência para Features
+
+**DAT_STATUS_FATURA**: 
+- Range: Out/2023 - Mar/2025
+- **Recomendado** para criação de features temporais
+- Cobre todo o período de análise
+
+---
+
+### Ideias de Features (Sugeridas)
+
+**1. Frequência de Pagamento:**
+- qtd_pagamentos_1m, 3m, 6m, 12m
+- taxa_pagamentos_no_prazo
+- meses_consecutivos_com_pagamento
+
+**2. Valor Financeiro:**
+- val_total_pago_periodo
+- val_medio_pagamento
+- val_min/max_pagamento
+
+**3. Pontualidade:**
+- dias_atraso_medio_pagamento
+- flag_sempre_paga_no_prazo
+- qtd_pagamentos_antecipados
+
+**4. Padrão de Pagamento:**
+- forma_pagamento_predominante
+- banco_predominante
+- variabilidade_valor_pago
+
+**5. Tipo de Fatura:**
+- prop_tipo_146 (alto risco)
+- prop_faturas_abertas
+
+---
+
+### Limitações Importantes
+
+1. **Baixo poder preditivo individual**: Variáveis não discriminam bem sozinhas
+2. **Viés complementar**: Base mostra APENAS quem paga (complemento do Atraso)
+3. **Necessário combinar**: Usar com Atraso + Recarga + Telco para visão completa
+4. **Histórico limitado**: Algumas variáveis (atividade/crédito) só após Mar/2024
+
+---
+
+### Recomendações
+
+1. **Criar features agregadas** por períodos (1, 3, 6, 12 meses)
+2. **Combinar com Book Atraso** (contrabalancear viés)
+3. **Focar em padrões comportamentais** vs valores absolutos
+4. **Tratar outliers** com cuidado (podem ser clientes VIP legítimos)
+
+---
+
+---
+
+## 📊 Base: Telco
+
+**Responsável**: Daniel Dayan | **Registros**: 1.290.526 | **Variáveis**: 76 (var_26 a var_93)  
+**Período**: Out/2024 - Mar/2025 (6 safras)  
+**Notebook**: [eda_telco.ipynb](../notebooks/eda_telco.ipynb) | **Dicionário**: [dict_telco.docx](data_dictionary/dict_telco.docx)
+
+---
+
+### Visão Geral
+
+Base de **uso e serviços telco** (consumo de dados, voz, SMS, planos, etc.). Variáveis anonimizadas (var_26 a var_93). Target FPD 24% inadimplentes.
+
+**Granularidade**: CPF + SAFRA (6 meses de análise)
+
+---
+
+### Qualidade dos Dados
+
+**Missing pattern consistente:**
+- **1.295 linhas** com nulos em TODAS as colunas var_26 a var_93
+- Padrão sistemático (não aleatório)
+- **Hipótese**: Clientes sem histórico telco ou erro de sistema
+
+**CPFs duplicados:**
+- Mesma razão que outras bases: CPF em múltiplas safras
+- Ocorre quando cliente assina novo produto/serviço
+- **Solução**: Chave CPF + SAFRA
+
+**Consistência do target:**
+- FPD idêntico nas bases Score e Telco ✅
+
+---
+
+### Poder Preditivo: MISTO ⚙️
+
+**Variáveis Numéricas:** ⚠️ **Baixo poder preditivo**
+
+![KDE Numéricas vs FPD](figures/telco_kde_numericas_fpd.png)
+
+- Distribuições FPD=0 vs FPD=1 **muito sobrepostas**
+- Pouca separação entre classes
+- Maioria concentrada em 0, 100 ou 300
+
+**Variáveis Categóricas:** ✅ **POTENCIAL identificado**
+
+![Categóricas vs FPD](figures/telco_cat_fpd.png)
+
+**Categorias discriminatórias:**
+- Algumas categorias têm **100% target=0** (apenas adimplentes)
+- **var_74**: Categoria com **100% target=1** (apenas inadimplentes!) ⭐
+- **Alto poder de separação** em variáveis específicas
+
+---
+
+### Distribuição das Variáveis
+
+**Numéricas (var_26 a var_93):**
+- Concentração entre 0-100
+- Picos em: **0**, **100**, **300**
+- **300** pode ser outlier ou código para missing
+- var_90: Baixa variabilidade, alguns outliers
+
+**Categóricas:**
+- Alta variabilidade entre variáveis
+- Algumas com categorias muito discriminatórias
+
+---
+
+### Variável Destaque: var_74 ⭐⭐⭐
+
+**Descoberta crítica:**
+- Possui categoria onde **100% dos clientes são inadimplentes**
+- **Poder de separação perfeito** para esse grupo
+- Candidata a **variável-chave** do modelo Telco
+
+**Outras variáveis promissoras:**
+- Categorias exclusivas de adimplentes (target=0)
+- Potencial para regras de negócio
+
+---
+
+### Missing Values: Padrão Sistemático
+
+**1.295 clientes (~0,1%) sem nenhum dado telco:**
+
+**Possíveis razões:**
+1. Clientes sem serviço telco ativo
+2. Erro de integração de sistemas
+3. Clientes recém-migrados (sem histórico)
+
+**Ação recomendada:**
+- Criar flag: `sem_historico_telco`
+- Avaliar se ausência de dados correlaciona com FPD
+- Decidir: imputar ou tratar como categoria separada
+
+---
+
+### Valores Atípicos
+
+**Valor 300:**
+- Frequente em várias variáveis
+- **Hipótese**: Código para dado faltante ou "não aplicável"
+- Investigar dicionário de dados original
+
+**Concentração em 0 e 100:**
+- Possível escala percentual (0-100%)
+- Ou classificação binária/categórica
+
+---
+
+### Análise Temporal
+
+**Safras**: Out/2024 - Mar/2025 (6 meses)
+
+**Taxa de FPD**: Estável em ~24% ao longo das safras
+
+**Recorrência de CPFs:**
+- Clientes aparecem quando há nova assinatura/produto
+- Comportamento esperado (não é duplicação)
+
+---
+
+### Limitações
+
+1. **Variáveis anonimizadas**: Dificulta interpretação de negócio
+2. **Baixo poder numérico**: Maioria das numéricas não discrimina
+3. **Missing sistemático**: 1.295 clientes sem dados
+4. **Valor 300**: Incerteza se é outlier ou missing
+
+---
+
+### Pontos Fortes
+
+1. **var_74**: Categoria com 100% inadimplentes (MUITO forte!)
+2. **Categorias exclusivas**: Algumas categorias são "puras" (só 0 ou só 1)
+3. **Complementaridade**: Adiciona dimensão de uso/serviço às outras bases
+4. **Volume**: 1.3M registros (boa cobertura)
+
+---
+
+### Recomendações
+
+1. **Investigar var_74**: Entender o que representa (produto? plano? comportamento?)
+2. **Criar regras**: Categorias com 100% target podem virar regras de negócio
+3. **Tratar missing pattern**: Flag para 1.295 clientes sem dados
+4. **Classificar valor 300**: Confirmar se é missing ou outlier legítimo
+5. **Feature engineering**:
+   - Flags de categorias de alto risco
+   - Combinações de var_74 com outras categóricas
+   - Razões entre variáveis numéricas
+
+6. **Modelagem incremental**: Testar ganho específico de var_74 isoladamente
+
+---
+
 *Atualização: 07/02/2026*
 
