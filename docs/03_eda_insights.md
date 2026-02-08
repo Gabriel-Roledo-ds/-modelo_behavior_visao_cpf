@@ -163,5 +163,139 @@ Base de scores de crédito de bureaus externos. Granularidade: CPF + SAFRA. Targ
 5. **Combinar com outras bases** (cadastrais, recarga, telco) para ganho incremental
 
 ---
+---
 
+## 📊 Base: Book Atraso
+
+**Responsável**: Daniel Dayan | **Registros**: 31.611.316 (transacional) → 1.290.526 (pós-join)  
+**Variáveis**: 50 | **Período histórico**: Out/2023 - Mar/2025 (18 meses)  
+**Notebook**: [eda_atraso.ipynb](../notebooks/eda_atraso.ipynb) | **Dicionário**: [dicionario_atraso.docx](data_dictionary/dicionario_atraso.docx)
+
+---
+
+### Visão Geral
+
+Base **transacional** de faturas em atraso. Após join com Bureau: 1.290.526 registros. **1 ano de histórico** antes da primeira safra de modelagem (Out/2024).
+
+**Granularidade**: Transação de fatura em atraso (múltiplas linhas por CPF)
+
+---
+
+### Qualidade dos Dados
+
+- **Base transacional**: CPFs aparecem **apenas quando têm fatura em atraso**
+- **CPFs duplicados**: Esperado (base transacional)
+- **Recorrência máxima**: Cliente aparece em até 18 safras consecutivas (atraso crônico)
+- **Missings críticos**: DAT_EXPIRACAO_DW (100%), DAT_CANCELAMENTO_FAT (100%)
+
+---
+
+### Variável-Chave: DW_FAIXA_AGING_DIVIDA 
+
+**Única variável numérica com poder preditivo relevante:**
+
+- Adimplentes têm aging de dívida **menor**
+- Inadimplentes têm aging de dívida **maior**
+- **Aging** = tempo desde vencimento da fatura
+
+![Aging vs FPD](figures/atraso_aging_fpd.png)
+
+---
+
+### Variáveis Categóricas com Risco Diferenciado
+
+**Plataforma (cod_plataforma):**
+- **Alto risco**: M2MS, POSTL, PREPG
+- Classificação do perfil: Pós-Pago, Auto-Controle, Pré-pago
+
+**Ponto de Venda:**
+- 2 tipos específicos mostram risco maior (Claro já usa para modelagem)
+
+**Observação**: Variabilidade de FPD existe, mas poucas categorias se destacam fortemente.
+
+---
+
+### Análise Temporal
+
+**Histórico disponível**: Out/2023 - Mar/2025
+
+**Padrão identificado:**
+- ↑ Contagem de faturas em aberto ao longo do tempo
+- ↑ Valor total em aberto aumenta por safra
+- **Pico de pagamentos**: Setembro/2024
+- **Picos de parcelamento**: Jun/24, Out/24, Dez/24
+
+**Clientes recorrentes:**
+- Máximo: 18 aparições (atraso em TODOS os meses)
+- Mínimo: 1 aparição (atraso pontual)
+
+---
+
+### Comportamento da Base
+
+**CPF só aparece quando há atraso:**
+- Base **NÃO contém** clientes sem atraso
+- É um filtro natural de risco
+- Combinação com outras bases é essencial
+
+**Estrutura transacional:**
+- Múltiplas linhas por CPF
+- ID_FATURA pode se repetir com NUM_ENT_SEQ_FATURA diferente
+- Mesmo CONTRATO = mesmo DW_NUM_CLIENTE
+
+---
+
+### Outliers Financeiros
+
+**Valores de fatura:**
+- Outliers existem (~5% da base)
+- São pagamentos reais de alto valor
+- Não são erros de sistema
+
+---
+
+### Ideias de Features (Sugeridas na EDA)
+
+**1. Frequência (1, 3, 6, 12 meses):**
+- qtd_faturas_em_atraso
+- qtd_meses_com_atraso
+- taxa_meses_atraso
+
+**2. Valor Financeiro:**
+- val_total_em_atraso
+- val_medio_fatura_atraso
+- val_max_atraso
+
+**3. Aging e Tempo:**
+- dias_atraso_medio
+- dias_atraso_maximo
+- aging_medio_divida
+
+**4. Reincidência:**
+- teve_atraso_mes_anterior
+- meses_consecutivos_atraso
+- flag_atraso_cronico (>12 meses)
+
+---
+
+### Limitações
+
+- **Poder preditivo geral**: Baixo para maioria das variáveis numéricas
+- **Exceção**: DW_FAIXA_AGING_DIVIDA
+- **Viés de seleção**: Base contém APENAS clientes com histórico de atraso
+- **Necessário**: Combinar com bases de comportamento positivo (recarga, telco)
+
+---
+
+### Recomendações
+
+1. **Criar features agregadas** (frequência, valor, aging) por período
+2. **Usar histórico completo** (18 meses disponíveis)
+3. **Identificar padrões de recorrência** (1 vez vs crônico)
+4. **Combinar com outras bases** para balancear viés
+5. **Atenção especial**: Plataformas M2MS, POSTL, PREPG
+
+---
+
+*Atualização: 07/02/2026*
 
