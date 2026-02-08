@@ -27,7 +27,7 @@ Identificar clientes da base pré-pago com maior probabilidade de inadimplência
 
 ---
 
-##  Diferencial: Crédito Telco ≠ Crédito Tradicional
+##  Diferencial: Crédito Claro Score ≠ Crédito Tradicional
 
 **Case Real**:
 - Cliente pré-pago: Histórico consistente de recarga, sem histórico bancário
@@ -47,7 +47,7 @@ Identificar clientes da base pré-pago com maior probabilidade de inadimplência
 | **KS** | ≥ 33,1 |
 | **GINI** | Máximo possível |
 | **Taxa de Aprovação** | ~73-74% (baseline) |
-| **Taxa de Inadimplência** | ≤ Baseline grupo controle |
+
 
 **⚠️ Importante**: 
 > Análise completa da curva ROC. **Foco na metade inferior** (maior impacto de negócio).
@@ -85,7 +85,7 @@ Avaliar **ROI de cada fonte de dados**:
 **Books utilizados**:
 - `book_atraso`: Padrões de atraso
 - `book_pagamento`: Histórico transacional
-- `book_recarga`: Comportamento de recarga (**diferencial telco**)
+...
 
 ---
 
