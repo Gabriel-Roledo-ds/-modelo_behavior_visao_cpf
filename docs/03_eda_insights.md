@@ -618,5 +618,336 @@ Base de **uso e serviços telco** (consumo de dados, voz, SMS, planos, etc.). Va
 
 ---
 
-*Atualização: 07/02/2026*
+---
+
+## 📊 Base: Recarga (Book Recarga)
+
+**Responsável**: Cézar Augusto | **Registros**: 100.213.651 (transacional) → 51.684.470 (pós-join)  
+**CPFs distintos**: 3.077.601 (base original) → 1.269.268 (pós-join com Bureau)  
+**Período histórico**: Out/2023 - Mar/2025 (18 meses) | **Safras de análise**: 6 (Out/24 - Mar/25)  
+**Notebook**: [eda_recarga.py](../notebooks/eda_recarga.py) | **Dicionário**: [dicionario_recarga.docx](data_dictionary/dicionario_recarga.docx)
+
+---
+
+### Visão Geral
+
+Base **transacional massiva** de eventos de recarga pré-pago. **100 milhões de recargas** de **3 milhões de CPFs**. Após join com Bureau: **1,27M CPFs** com FPD identificado.
+
+**Diferencial telco**: Comportamento de consumo real que bureaus tradicionais não capturam.
+
+**Granularidade**: Evento de recarga (múltiplas linhas por CPF × mês)
+
+---
+
+### Cobertura e Volume
+
+**Base original (antes do join):**
+- Registros: 100.213.651 eventos de recarga
+- CPFs distintos: 3.077.601
+- Período: 18 meses (Out/2023 - Mar/2025)
+- CPFs nulos: 0 (100% com CPF válido)
+
+**Após join com Bureau:**
+- Registros: 51.684.470 eventos (51,5% da base)
+- CPFs distintos: 1.269.268 (41,2% dos CPFs originais)
+- Safras: 6 (202410, 202411, 202412, 202501, 202502, 202503)
+- FPD disponível para 100% dos CPFs
+
+**Agregação final (CPF × mês):**
+- 16.282.833 linhas (CPF × ANO_MES)
+- 1.269.268 CPFs únicos
+- 18 meses distintos (202310 - 202503)
+- Média: ~12,8 meses ativos por CPF
+
+---
+
+### Complexidade: CPF × Múltiplos Identificadores
+
+**1. CPF × NUM_CLIENTE (DW_NUM_CLIENTE)**
+
+| Nº clientes/CPF | Qtd CPFs | % |
+|-----------------|----------|---|
+| 1 | 20.547 | 1,62% |
+| 2 | 543.092 | 42,79% |
+| 3 | 319.618 | 25,18% |
+| 4 | 189.227 | 14,91% |
+| 5+ | 196.784 | 15,50% |
+
+**Descoberta crítica**: 
+- **98,38% dos CPFs** têm 2+ códigos de cliente distintos!
+- Máximo: 36 clientes diferentes para 1 CPF
+- **Não é erro**: Representa múltiplos contratos/linhas ao longo do tempo
+
+**2. CPF × NUM_NTC (Número Terminal/Contrato)**
+
+| Nº NTCs/CPF | Qtd CPFs | % |
+|-------------|----------|---|
+| 1 | 682.785 | 53,79% |
+| 2 | 367.468 | 28,95% |
+| 3 | 142.757 | 11,25% |
+| 4 | 48.938 | 3,86% |
+| 5+ | 27.320 | 2,15% |
+
+- **46,21% dos CPFs** usam 2+ NTCs diferentes
+- Máximo: 22 NTCs para 1 CPF
+- Indica troca de chip, múltiplas linhas, ou portabilidade
+
+**Implicação para modelagem:**
+- Agregação por CPF é **obrigatória**
+- Relacionamento 1:N complexo
+- Features devem capturar diversidade
+
+---
+
+### Variáveis Monetárias
+
+| Variável | Registros | Nulos | Min (R$) | Média (R$) | Max (R$) |
+|----------|-----------|-------|----------|------------|----------|
+| VAL_CREDITO_INSERIDO | 100.213.651 | 0 | 0,00 | 8,09 | [alto] |
+| VAL_BONUS | 100.213.651 | 0 | -87.895,20 | 10.079,38 | [alto] |
+| VAL_REAL | 100.213.651 | 0 | -87.895,20 | 10.087,46 | [alto] |
+| VALOR_SOS | 6.534.414 | 93.679.237 (93,5%) | 3,00 | 7,55 | [alto] |
+
+**Insights:**
+- **Valores negativos** em VAL_BONUS e VAL_REAL: Estornos ou ajustes
+- **VALOR_SOS** presente em apenas 6,5% das recargas (emergências)
+- Média de recarga: ~R$ 8,09 (crédito puro) / ~R$ 10,00 (com bônus)
+
+---
+
+### Dimensões e Enriquecimento
+
+#### **1. BI_DIM_INSTITUICAO** (Onde recarrega)
+
+**Cobertura**: 1.183.993 CPFs com informação (93,28%)
+
+**Tipo de instituição dominante:**
+
+| Código | Tipo | Qtd CPFs | % |
+|--------|------|----------|---|
+| 13 | [Tipo 13] | 766.107 | 60,36% |
+| 1 | [Tipo 1] | 170.704 | 13,45% |
+| 4 | [Tipo 4] | 137.844 | 10,86% |
+| 10 | [Tipo 10] | 71.415 | 5,63% |
+| SEM_INFO | - | 85.275 | 6,72% |
+
+**Diversidade institucional:**
+
+| Nº tipos/CPF | Qtd CPFs | % |
+|--------------|----------|---|
+| 1 (Exclusivo) | 399.908 | 31,51% |
+| 2 | 445.818 | 35,12% |
+| 3 | 248.850 | 19,61% |
+| 4+ | 89.417 | 7,04% |
+
+**Insight**: 
+- **68,49% dos CPFs** usam 2+ tipos de instituição
+- Máxima diversidade: 7 tipos diferentes
+- Diversidade pode indicar flexibilidade ou oportunismo
+
+---
+
+#### **2. BI_DIM_TIPO_INSERCAO** (Como recarrega)
+
+**Cobertura**: Apenas 11.132 CPFs com informação (0,88%) ⚠️
+
+**Dominante**: 99,12% classificados como SEM_INFORMACAO
+
+**Dimensão descartada** para análise por baixíssima cobertura.
+
+---
+
+#### **3. BI_DIM_TIPO_RECARGA** (O quê recarrega)
+
+**Cobertura**: 9.756 CPFs com informação (0,77%) ⚠️
+
+**Dominante**: 99,23% classificados como SEM_INFORMACAO
+
+**Dimensão descartada** para análise por baixíssima cobertura.
+
+---
+
+#### **4. BI_DIM_FORMA_PAGAMENTO**
+
+**Cobertura**: 8.634 CPFs com informação (0,68%) ⚠️
+
+**Dominante**: 99,32% SEM_INFORMACAO
+
+**Dimensão descartada** para análise por baixíssima cobertura.
+
+---
+
+#### **5. BI_DIM_CANAL_AQUISICAO_CREDITO**
+
+**Tipo de crédito dominante**: 100% ONLINE
+
+**Diversidade**: 99,9999% dos CPFs usam apenas 1 tipo de crédito
+
+**Dimensão sem variação** - descartada.
+
+---
+
+### Features Criadas (Agregação por CPF)
+
+Com base nos 1.269.268 CPFs, foram criadas features agregadas:
+
+**1. Temporal:**
+- Meses ativos (min: 1, máx: 18)
+- Primeira recarga (data)
+- Última recarga (data)
+- Tempo de relacionamento (meses)
+
+**2. Frequência:**
+- Total de recargas no período
+- Média recargas/mês
+- Mediana recargas/mês
+- Desvio padrão (regularidade)
+
+**3. Valor:**
+- Valor total recarregado
+- Valor médio por recarga
+- Valor mediano
+- Valor máximo/mínimo
+
+**4. SOS (Emergências):**
+- Qtd recargas SOS
+- % recargas SOS
+- Valor médio SOS
+
+**5. Diversidade:**
+- Qtd tipos de instituição usados
+- Tipo de instituição dominante
+- Qtd NUM_CLIENTE distintos
+- Qtd NUM_NTC distintos
+
+**6. Regularidade:**
+- Coeficiente de variação (CV)
+- Gaps entre recargas
+- Taxa de recarga mensal
+
+---
+
+### Distribuição de CPFs por Safra (Bureau)
+
+| Safra | CPFs |
+|-------|------|
+| 202410 | 203.828 |
+| 202411 | 227.176 |
+| 202412 | 227.985 |
+| 202501 | 221.002 |
+| 202502 | 203.139 |
+| 202503 | 207.396 |
+
+**Estabilidade**: Volume entre 203k-228k CPFs por safra (variação de 11%)
+
+---
+
+### Poder Preditivo Esperado: MUITO ALTO ⭐⭐⭐
+
+**Por quê Recarga é o DIFERENCIAL:**
+
+1. **Comportamento real vs declarado**
+   - Bureaus capturam: histórico de crédito, protestos, negativações
+   - Recarga capta: consumo efetivo, capacidade de pagamento real
+
+2. **Regularidade como proxy de estabilidade**
+   - Recarga mensal consistente → Renda estável
+   - Irregularidade alta → Instabilidade financeira
+   - Gaps longos → Possível dificuldade
+
+3. **Valor médio ≠ Renda declarada**
+   - Mostra capacidade real de pagamento
+   - Menos manipulável que dados cadastrais
+
+4. **Diversidade institucional**
+   - Múltiplos pontos → Maior engajamento/flexibilidade
+   - Ponto único → Comportamento limitado/dependência
+
+5. **Recargas SOS**
+   - 6,5% das recargas são emergenciais
+   - Alta frequência de SOS → Stress financeiro
+
+**Ganho incremental (conforme kick-off):**
+
+> Book Atraso + Pagamento (KS 15) + **Book Recarga** = KS 25 (**+10 pontos**)
+
+---
+
+### Hipóteses de Risco
+
+**ALTO RISCO:**
+- Gaps longos sem recarga (>30-60 dias)
+- Queda abrupta no valor médio
+- % SOS > 15% das recargas
+- CV alto (irregularidade)
+- Menos de 6 meses ativos no período
+- Diversidade institucional = 1 (dependência)
+
+**BAIXO RISCO:**
+- Recarga mensal ou quinzenal consistente
+- Valor médio estável ou crescente
+- % SOS < 5%
+- CV baixo (regularidade)
+- 12+ meses ativos
+- Diversidade institucional ≥ 2
+
+---
+
+### Limitações Identificadas
+
+1. **Dimensões com baixíssima cobertura (<1%)**:
+   - Tipo de inserção
+   - Tipo de recarga
+   - Forma de pagamento
+   - **Ação**: Descartadas da análise
+
+2. **Variáveis sem descrição**:
+   - Códigos de instituição não mapeados para nomes
+   - Requer consulta ao dicionário original da Claro
+
+3. **Complexidade de relacionamento**:
+   - 98% dos CPFs com múltiplos NUM_CLIENTE
+   - Requer agregação cuidadosa
+
+4. **Viés pré-pago**:
+   - Base cobre apenas clientes pré-pagos
+   - Não captura comportamento pós-pago
+
+---
+
+### Recomendações para Modelagem
+
+1. **Features de regularidade são críticas**:
+   - CV (coeficiente de variação)
+   - Gaps entre recargas
+   - Frequência mensal
+
+2. **Criar flags de quebra de padrão**:
+   - Queda > 30% no valor médio
+   - Aumento > 50% em recargas SOS
+   - Gap > 2× mediana histórica
+
+3. **Diversidade institucional como proxy de engajamento**:
+   - 1 tipo → Risco
+   - 2-3 tipos → Normal
+   - 4+ tipos → Engajamento alto
+
+4. **Valor absoluto vs relativo**:
+   - Testar: Valor médio vs tendência (crescente/decrescente)
+   - Tendência pode ser mais preditiva
+
+5. **Modelagem incremental obrigatória**:
+   - Isolar ganho de Recarga
+   - Testar com/sem outras bases
+   - Validar os +10 pontos de KS
+
+6. **Atenção a SOS**:
+   - % SOS pode ser forte preditor
+   - Valor médio SOS também (emergências maiores = maior stress)
+
+
+---
+
+ 
+*Baseado em: eda_recarga.py + incorporacaoDimensoes.docx + inspecaoArquivosDimensoes.docx*
 
