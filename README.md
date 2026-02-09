@@ -122,7 +122,7 @@ A solução utiliza arquitetura **Medallion** (Bronze → Silver → Gold) na AW
 - **Amazon Athena**: Queries SQL serverless
 - **Power BI**: Dashboards e visualizações
 
-**Para mais detalhes**: Consulte [docs/08_architecture.md](docs/08_architecture.md) *(em desenvolvimento)*
+
 
 ---
 
@@ -165,12 +165,11 @@ A solução utiliza arquitetura **Medallion** (Bronze → Silver → Gold) na AW
 
 | Base | Descrição | Granularidade | Volume Estimado | Responsável EDA |
 |------|-----------|---------------|-----------------|-----------------|
-| `base_dados_cadastrais` | Informações cadastrais dos clientes | CPF | ~10M registros | [Nome] |
-| `base_score_bureau_movel` | Score de crédito bureau | CPF + Data | ~15M registros | [Nome] |
-| `base_score_bureau_movel_full` | Score com flag 0 para clientes reprovados | CPF + Data | ~20M registros | [Nome] |
-| `base_telco` | Dados de uso e serviços telco | CPF + Mês | ~50M registros | [Nome] |
-| `book_atraso` | Histórico de atrasos | CPF + Evento | ~5M registros | [Nome] |
-| `book_pagamento` | Histórico de pagamentos | CPF + Transação | ~80M registros | [Nome] |
+| `base_dados_cadastrais` | Informações cadastrais dos clientes | CPF | ~10M registros | Gabriel Roledo |
+| `base_score_bureau_movel` | Score de crédito bureau | CPF + Data | ~15M registros | Daniel Dayan |
+| `base_telco` | Dados de uso e serviços telco | CPF + Mês | ~50M registros | Gabriel Lenhart & Daniel Dayan |
+| `book_atraso` | Histórico de atrasos | CPF + Evento | ~5M registros | Daniel Dayan|
+| `book_pagamento` | Histórico de pagamentos | CPF + Transação | ~80M registros | Daniel Dayan |
 
 ### Books de Variáveis
 
