@@ -241,7 +241,7 @@ modelo-behavior-claro/
 - [ ] Feature engineering
 - [ ] Validação de qualidade de dados
 
-**Documentação**: Será disponibilizada em `docs/04_data_preparation.md` após implementação.
+
 
 ---
 
@@ -255,7 +255,7 @@ modelo-behavior-claro/
 - Features financeiras de crédito
 - Ratios e tendências
 
-**Documentação**: Será disponibilizada em `docs/05_feature_engineering.md` conforme evolução.
+
 
 ---
 
@@ -279,7 +279,7 @@ modelo-behavior-claro/
 - [ ] Otimização de hiperparâmetros
 - [ ] Validação final
 
-**Documentação**: Será disponibilizada em `docs/06_modeling.md` conforme modelo evolui.
+
 
 ---
 
