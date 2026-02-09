@@ -326,10 +326,8 @@ As métricas e resultados serão atualizados assim que o modelo baseline estiver
 
 **Membros**:
 - Daniel Dayan
-- Diego Lessa
 - Gabriel Lenhart
 - Gabriel Roledo
-- Tiago Carvalho
 - Cézar Augusto Freitas
 - Grazy Miranda
 - Ricardo Max
