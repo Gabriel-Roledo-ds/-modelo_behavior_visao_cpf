@@ -842,7 +842,6 @@ Com base nos 1.269.268 CPFs, foram criadas features agregadas:
 
 ---
 
-### Poder Preditivo Esperado: MUITO ALTO ⭐⭐⭐
 
 **Por quê Recarga é o DIFERENCIAL:**
 
@@ -867,9 +866,7 @@ Com base nos 1.269.268 CPFs, foram criadas features agregadas:
    - 6,5% das recargas são emergenciais
    - Alta frequência de SOS → Stress financeiro
 
-**Ganho incremental (conforme kick-off):**
 
-> Book Atraso + Pagamento (KS 15) + **Book Recarga** = KS 25 (**+10 pontos**)
 
 ---
 
