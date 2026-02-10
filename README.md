@@ -31,8 +31,8 @@ Este projeto está sendo desenvolvido durante o **Super Hackathon 2025** com o o
 
 - ✅ Construir visão única de cliente por CPF consolidando múltiplas bases
 - ✅ Identificar padrões comportamentais de inadimplência
-- 🔄 Desenvolver modelo behavior reprodutível e escalável (em andamento)
-- 🔄 Gerar insights acionáveis para estratégias de mitigação de risco (em andamento)
+- ✅ Desenvolver modelo behavior baseline reprodutível e escalável
+- ✅ Gerar insights acionáveis para estratégias de mitigação de risco 
 
 ---
 
@@ -73,10 +73,10 @@ Identificar, entre os clientes da base pré-pago, quais têm maior probabilidade
 
 | Métrica | Objetivo | Status |
 |---------|----------|---------|
-| **KS** | ≥ 33,1 (benchmark) | 🔄 Em avaliação |
-| **GINI** | Máximo possível | 🔄 Em avaliação |
-| **Taxa de Aprovação** | ~73-74% (baseline) | 🔄 Em avaliação |
-| **Taxa de Inadimplência** | ≤ Baseline grupo controle | 🔄 Em avaliação |
+| **KS** | ≥ 33,1 (benchmark) | 🔄 Em desenvolvimento (Baseline 30)|
+| **GINI e Curva ROC** | Máximo possível | 🔄 Em desenvolvimento (Baseline Curva ROC 0,703 | GINI 0,407) |
+| **Taxa de Aprovação** | ~73-74% (baseline) | 🔄 Em desenvolvento |
+| **Taxa de Inadimplência** | ≤ Baseline grupo controle | 🔄 Em desenvolvimento |
 
 > A análise considera toda a curva ROC e matriz de confusão, com **foco especial na metade inferior da curva de score** (onde está o maior impacto de negócio).
 
@@ -149,13 +149,16 @@ A solução utiliza arquitetura **Medallion** (Bronze → Silver → Gold) na AW
 
 ### Machine Learning
 - **Scikit-learn** - Modelagem e avaliação
-- **XGBoost / LightGBM** - Algoritmos de boosting *(planejado)*
+- **XGBoost / LightGBM/CatBoost/GradientBoost/RandomForest** - Algoritmos de bagging e boosting *(planejado)*
+- **Regressão Logística/ Arvore de decisão** - Algoritmos Nativos
 - **Jupyter Notebooks** - Experimentação e análise
+  
 
 ### Visualização
 - **Power BI** - Dashboards corporativos
 - **AWS QuickSight** - Visualizações em nuvem
 - **Matplotlib / Seaborn** - Visualizações Python
+- **Excell** 
 
 ---
 
@@ -170,76 +173,23 @@ A solução utiliza arquitetura **Medallion** (Bronze → Silver → Gold) na AW
 | `base_telco` | Dados de uso e serviços telco | CPF + Mês | ~50M registros | Gabriel Lenhart & Daniel Dayan |
 | `book_atraso` | Histórico de atrasos | CPF + Evento | ~5M registros | Daniel Dayan|
 | `book_pagamento` | Histórico de pagamentos | CPF + Transação | ~80M registros | Daniel Dayan |
+| 'base_recarga' | Histórico de recargas  | CPF + data | ~100 registros | Cézar Augusto
 
 ### Books de Variáveis
 
 **Conceito**: Estruturas pré-calculadas de variáveis categorizadas por assunto, desenvolvidas para:
 - ✅ Padronização e reutilização
-- ✅ Eficiência computacional
-- ✅ Governança de dados
+- ✅ Aumento de poder preditivo
+- ✅ Captura de comportamentos e tendências temporais
 
 **Books Utilizados**:
 - `book_atraso` - Variáveis de comportamento de atraso
 - `book_pagamento` - Variáveis de histórico transacional
+- 'book_recarga' - Variáveis de histórico de recarga
 
 
 **Dicionários completos**: Disponíveis em [docs/data_dictionary/](docs/data_dictionary/)
 
----
-
-## 📂 Estrutura do Projeto
-
-```
-modelo-behavior-claro/
-│
-├── README.md                          # Este arquivo
-├── diagrama_arquitetura.jpg          # Diagrama da arquitetura AWS
-│
-├── docs/                              # Documentação detalhada
-│   ├── 01_business_context.md        # Contexto de negócio completo
-│   ├── 02_data_understanding.md      # Entendimento das bases de dados
-│   ├── 03_eda_insights.md            # Resumo dos insights das EDAs (em desenvolvimento)
-│   │
-│   ├── data_dictionary/              # Dicionários de dados de cada base
-│   │   ├── base_cadastrais.xlsx
-│   │   ├── base_recarga.xlsx
-│   │   ├── base_telco.xlsx
-│   │   └── ... (um por base)
-│   │
-│   ├── book_variaveis/               # Books de variáveis
-│   │   ├── book_atraso.xlsx
-│   │   ├── book_pagamento.xlsx
-│   
-│
-├── notebooks/                         # Análises exploratórias (EDAs)
-│   ├── eda_cadastrais.ipynb          # EDA - Base cadastral
-│   ├── eda_recarga.ipynb             # EDA - Base recarga
-│   ├── eda_telco.ipynb               # EDA - Base telco
-│   ├── eda_score_bureau.ipynb        # EDA - Score bureau
-│   ├── eda_atraso.ipynb              # EDA - Book atraso
-│   └── eda_pagamento.ipynb           # EDA - Book pagamento
-│
-└── models/                            # Modelos (em desenvolvimento)
-    └── baseline/                      # Modelo baseline
-```
-
----
-
-## 🔄 Trabalho em Progresso
-
-> ⚠️ Este projeto está em desenvolvimento ativo. As seções abaixo serão atualizadas conforme o projeto evolui.
-
-### Pipeline de Dados
-
-**Status**: 🔄 Em desenvolvimento
-
-**Progresso**:
-- [x] Ingestão de dados (Bronze layer)
-- [x] Catalogação com Glue
-- [ ] Transformação Bronze → Silver
-- [ ] Agregação Silver → Gold (visão única por CPF)
-- [ ] Feature engineering
-- [ ] Validação de qualidade de dados
 
 
 
@@ -247,12 +197,10 @@ modelo-behavior-claro/
 
 ### Feature Engineering
 
-**Status**: 🔄 Em desenvolvimento
 
 **Abordagem Planejada**:
-- Agregações temporais (3, 6, 12 meses)
-- Features comportamentais de recarga
-- Features financeiras de crédito
+- Agregações temporais (1, 3, 6, 9, 12 meses)
+- Features comportamentais de recarga/pagamento/atraso
 - Ratios e tendências
 
 
@@ -261,7 +209,6 @@ modelo-behavior-claro/
 
 ### Modelagem
 
-**Status**: 🔄 Iniciado (em andamento)
 
 **Estratégia**:
 - Modelagem incremental (conforme orientação Claro)
@@ -269,54 +216,10 @@ modelo-behavior-claro/
 - Validação out-of-time (safras fev/mar)
 - Benchmark: KS ≥ 33,1
 
-**Progresso Atual**:
-- [x] Definição de estratégia
-- [x] Análise exploratória das bases
-- [ ] Integração de dados (visão única por CPF)
-- [ ] Feature engineering
-- [ ] Treinamento modelo baseline
-- [ ] Modelagem incremental (6 versões)
-- [ ] Otimização de hiperparâmetros
-- [ ] Validação final
-
-
 
 ---
 
-### Como Reproduzir
 
-**Status**: ⏳ Aguardando finalização do pipeline
-
-O processo completo de reprodução será documentado após a implementação e integração de todos os componentes.
-
-**Atualmente disponível**:
-- Notebooks individuais de EDA (em `notebooks/`)
-- Dicionários de dados (em `docs/data_dictionary/`)
-- Books de variáveis (em `docs/book_variaveis/`)
-
-**Em breve**:
-- Scripts de ingestão de dados
-- Pipeline de transformação
-- Scripts de feature engineering
-- Scripts de treinamento de modelos
-
----
-
-### Resultados
-
-**Status**: ⏳ Aguardando conclusão da modelagem
-
-As métricas e resultados serão atualizados assim que o modelo baseline estiver treinado e validado.
-
-**Métricas que serão reportadas**:
-- KS Statistic (objetivo: ≥ 33,1)
-- GINI Coefficient
-- Curva ROC / AUC
-- Taxa de Aprovação vs Inadimplência
-- Feature Importance
-- Análise de Swap In / Swap Out
-
----
 
 ## 👥 Time
 
@@ -329,14 +232,13 @@ As métricas e resultados serão atualizados assim que o modelo baseline estiver
 - Gabriel Lenhart
 - Gabriel Roledo
 - Cézar Augusto Freitas
-- Grazy Miranda
 - Ricardo Max
 
 ### Divisão de Responsabilidades
 
 - **Análises Exploratórias (EDAs)**: Daniel Dayan, Cézar Augusto Freitas, Gabriel Lenhart e Gabriel Roledo
 - **Feature Engineering**: Daniel Dayan e Cézar Augusto Freitas
-- **Modelagem**: Rafael Lima e Daniel Dayan
+- **Modelagem**: Daniel Dayan
 - **Engenharia de dados**: Ricardo Max
 - **Documentação**: Gabriel Roledo
 ---
@@ -348,16 +250,9 @@ A documentação completa do projeto está organizada na pasta `docs/`:
 ### Disponível Agora ✅
 
 - **[Contexto de Negócio](docs/01_business_context.md)**: Problema, objetivos, case de sucesso, métricas
-- **[Entendimento dos Dados](docs/02_data_understanding.md)**: Descrição das bases, dicionários, books
+- **[Insights das EDA](docs/02_eda_insights.md)**: Resumo dos insights
 
-### Em Desenvolvimento 🔄
 
-- **EDA e Insights**: Resumo das análises exploratórias (em compilação)
-- **Data Preparation**: Limpeza, validação, grupo controle (aguardando implementação)
-- **Feature Engineering**: Criação de variáveis preditivas (em andamento)
-- **Modelagem**: Processo incremental completo (em andamento)
-- **Avaliação**: Métricas, validação out-of-time (aguardando resultados)
-- **Arquitetura**: Detalhamento técnico Medallion (em elaboração)
 
 ### Recursos Adicionais
 
@@ -374,23 +269,7 @@ A documentação completa do projeto está organizada na pasta `docs/`:
 
 ---
 
-## 📌 Roadmap
 
-- [x] Definição do problema e objetivos ✅
-- [x] Estruturação do projeto ✅
-- [x] Setup de infraestrutura AWS ✅
-- [x] Análise exploratória das bases 🔄
-- [ ] Integração de dados (visão única por CPF) 🔄
-- [ ] Feature engineering 🔄
-- [ ] Modelo baseline 🔄
-- [ ] Modelagem incremental ⏳
-- [ ] Validação out-of-time ⏳
-- [ ] Otimização de hiperparâmetros ⏳
-- [ ] Análise de resultados ⏳
-- [ ] Documentação completa ⏳
-- [ ] Apresentação final ⏳
-
-**Legenda**: ✅ Concluído | 🔄 Em Andamento | ⏳ Aguardando
 
 
 
